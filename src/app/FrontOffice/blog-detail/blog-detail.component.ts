@@ -9,7 +9,10 @@ import { CommentService } from 'src/app/services/comment.service';
 import { Comment } from 'src/app/models/comment';
 import { HttpClient } from '@angular/common/http';
 import { PerspectiveService } from 'src/app/services/perspective.service';
+import { Chart, registerables } from 'chart.js';
 import { finalize } from 'rxjs/operators';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-blog-detail',
@@ -21,7 +24,8 @@ export class BlogDetailComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   successMessage: string = '';
-  postId: number = 1; 
+  postId: number = 1;
+  private apiUrl = 'http://localhost:8080/api';
   commentForm: FormGroup;
   editCommentForm: FormGroup;
   comments: Comment[] = [];
@@ -60,34 +64,26 @@ export class BlogDetailComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    const postId = this.route.snapshot.params['id']; // or use ActivatedRoute correctly
-
-    if (postId) {
-      // Load the article first
-      this.loadArticle().then(() => {
-        // Then increment the view count after article is loaded
-        if (this.article) {
-          this.incrementViewCount(postId);
-        }
-      });
-      this.getPostDetails(postId); 
-    }
-    
     this.getStatistics();
     this.loadStatistics();
     
+    // Use route.params subscription to handle both initial load and navigation between articles
     this.route.params.subscribe(params => {
-      this.postId = params['id']; // Getting the postId from the URL params
+      const postId = params['id']; // Getting the postId from the URL params
+      this.postId = postId;
       
-      // Load the article first
-      this.loadArticle().then(() => {
-        // Then increment the view count after article is loaded
-        if (this.article) {
-          this.incrementViewCount(this.postId);
-        }
-      });
-      
-      this.loadComments(0); // Reset to first page when loading a new article
+      if (postId) {
+        // Load the article first
+        this.loadArticle().then(() => {
+          // Then increment the view count after article is loaded
+          if (this.article) {
+            this.incrementViewCount(postId);
+          }
+        });
+        
+        this.getPostDetails(postId);
+        this.loadComments(0); // Reset to first page when loading a new article
+      }
     });
   }
 
@@ -177,7 +173,7 @@ export class BlogDetailComponent implements OnInit {
     setTimeout(() => {
       this.articleService.incrementViewCount(postId).subscribe({
         next: (response) => {
-          console.log('View count increment successful:', response);
+          console.log('View count increment successful, full response:', response);
           
           // Update the view count in the UI
           if (this.article) {
@@ -195,12 +191,20 @@ export class BlogDetailComponent implements OnInit {
                 this.article.viewCount = viewCount;
                 console.log('Updated article with latest data from server');
               }
-              
-              // Force change detection to update the view
-              this.cdr.detectChanges();
+            } else if (response && typeof response.viewCount !== 'undefined') {
+              // Direct viewCount property on response
+              this.article.viewCount = response.viewCount;
+              console.log(`Updated view count to ${this.article.viewCount} from direct response property`);
+            } else if (response && typeof response === 'object') {
+              // Log all properties of the response for debugging
+              console.log('Response properties:', Object.keys(response));
+              console.log('No standard viewCount found in response, keeping optimistic update');
             } else {
               console.log('No view count in response, keeping optimistic update');
             }
+            
+            // Force change detection to update the view
+            this.cdr.detectChanges();
           }
         },
         error: (error) => {
@@ -485,7 +489,7 @@ export class BlogDetailComponent implements OnInit {
   }
 
 
-  logCommentId(comment: Comment) {
+  logCommentId(comment: Comment): void {
     console.log('Comment object:', comment);
     
     // Check all possible ID fields, including post.id
@@ -616,13 +620,30 @@ export class BlogDetailComponent implements OnInit {
     this.articleService.triggerTask().subscribe({
       next: (response) => {
         console.log('Task triggered successfully:', response);
-        alert('Task triggered successfully: ' + response);  // Show the alert here
-        // Handle success
+        this.successMessage = 'Task triggered successfully: ' + response;  // Show the success message
+
+        // After the task is triggered, reset the views
+        this.articleService.resetViews().subscribe({
+          next: (resetResponse) => {
+            console.log('Views reset successfully:', resetResponse);
+            //alert('Views have been reset!');
+
+             // Reload the article to update the view count
+            this.loadArticle();
+
+          },
+          error: (resetError) => {
+            console.error('Error resetting views:', resetError);
+            this.errorMessage = 'Error resetting views: ' + resetError.message;
+            setTimeout(() => this.errorMessage = '', 3000);
+            //alert('Failed to reset views.');
+          }
+        });
       },
       error: (error) => {
         console.error('Error triggering task:', error);
-        alert('Error triggering task: ' + error.message);  // Show the error alert here
-        // Handle error
+        this.errorMessage = 'Error triggering task: ' + error.message;  // Show the error alert here
+        setTimeout(() => this.errorMessage = '', 3000);
       }
     });
   }
@@ -799,4 +820,3 @@ export class BlogDetailComponent implements OnInit {
     }
   }
 }
-

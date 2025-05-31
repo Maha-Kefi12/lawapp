@@ -1,5 +1,16 @@
-<!-- Modern Law Blog Detail Page -->
-<div class="blog-detail-page">
+<!-- blog-detail.component.html -->
+<div class="blog-detail-container">
+  <!-- Trigger Task Section -->
+  <div class="trigger-task-container">
+    <button (click)="triggerTask()" class="trigger-task-button">Trigger Task & Reset Views</button>
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+
+  
+  
+
+  <!-- Article Content -->
   <!-- Hero Banner Section -->
   <div class="hero-banner" *ngIf="!isLoading && article">
     <div class="overlay"></div>
@@ -72,7 +83,7 @@
             </div>
 
             <!-- Notifications -->
-            <div class="notification success" *ngIf="successMessage">
+            <div class="notification success" *ngIf="successMessage && !isSubmittingComment">
               <i class="las la-check-circle"></i>
               <span>{{ successMessage }}</span>
             </div>

@@ -53,7 +53,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     BlogsComponent,
     BlogDetailComponent,
     ContactComponent,
-    FormDataComponent
+    FormDataComponent,
+  
   ],
   imports: [
     BrowserModule,

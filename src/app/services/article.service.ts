@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Article } from '../models/article'; // Corrected import path
+import { Article } from '../models/article';
 import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ArticleStatistic } from '../models/article'; // Corrected import path
 import { tap } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+// Define the ArticleStatistic interface
+export interface ArticleStatistic {
+  name: string;
+  viewCount: number; // or Long, depending on your backend
+}
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 

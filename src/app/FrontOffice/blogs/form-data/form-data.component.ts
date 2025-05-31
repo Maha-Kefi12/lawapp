@@ -144,23 +144,24 @@ export class FormDataComponent {
       } else {
         // Create new article
         response = await firstValueFrom(
-          this.http.post<Article>('http://localhost:8080/api/posts/createPost', post, {
+          this.http.post('http://localhost:8080/api/posts/createPost', post, {
             headers: new HttpHeaders({ 
               'Content-Type': 'application/json'
             }),
-            observe: 'response'
+            observe: 'response',
+            responseType: 'text'  // Expect a text response
           })
         );
       }
   
       // Hide loading indicator
       this.isLoading = false;
-  
+   
       if (response.status === 200 || response.status === 201) {
         const message = this.articleId ? 'Article updated successfully!' : 'Article created successfully!';
         this.showSuccess(message);
         
-        // Always navigate back to the blogs page
+        console.log('Navigating to /blogs'); // Added console.log
         this.router.navigate(['/blogs']);
       } else {
         this.showError(`Unexpected response: ${response.status}`);

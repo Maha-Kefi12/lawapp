@@ -20,6 +20,12 @@
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
+            "fileReplacements": [
+              {
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -39,8 +45,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "32kb",
+                  "maximumError": "64kb"
                 }
               ],
               "outputHashing": "all"

@@ -9,6 +9,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 // Define the ArticleStatistic interface
 export interface ArticleStatistic {
   name: string;
@@ -23,7 +24,9 @@ import { switchMap } from 'rxjs/operators';
 })
 export class ArticleService {
   
-  private apiUrl = 'http://localhost:8080/api/articles'; // Update with your backend API URL
+  private readonly baseApiUrl = `${environment.apiUrl}`;
+  private readonly postsApiUrl = `${this.baseApiUrl}/posts`;
+  private readonly articlesApiUrl = `${this.baseApiUrl}/articles`;
 
   constructor(private http: HttpClient) {}
 
@@ -42,7 +45,7 @@ export class ArticleService {
     const timestamp = new Date().getTime();
     
     return this.http.get<Article[]>(
-      `http://localhost:8080/api/posts/getALL?_=${timestamp}`, 
+      `${this.postsApiUrl}/getALL?_=${timestamp}`, 
       { headers }
     ).pipe(
       tap(articles => {
@@ -70,7 +73,7 @@ export class ArticleService {
     const timestamp = new Date().getTime();
     
     return this.http.get<Article>(
-      `http://localhost:8080/api/posts/${id}?_=${timestamp}`,
+      `${this.postsApiUrl}/${id}?_=${timestamp}`,
       { headers }
     ).pipe(
       tap(article => {
@@ -87,7 +90,7 @@ export class ArticleService {
   
   // Create new article
   createArticle(article: any): Observable<Article> {
-    return this.http.post<Article>("http://localhost:8080/api/posts/createPost", article).pipe(
+    return this.http.post<Article>(`${this.postsApiUrl}/createPost`, article).pipe(
       catchError(error => {
         console.error('API Error:', error);
         throw error; // Re-throw for component handling
@@ -96,16 +99,16 @@ export class ArticleService {
   }
   // Update article
 updateArticle(id: number, article: Article): Observable<Article> {
-  return this.http.put<Article>(`http://localhost:8080/api/posts/updatePost/${id}`, article);
+  return this.http.put<Article>(`${this.postsApiUrl}/updatePost/${id}`, article);
   
 }
 updateArticleWithFormData(id: number, data: FormData) {
-  return this.http.put(`http://localhost:8080/api/posts/update/${id}`, data);
+  return this.http.put(`${this.postsApiUrl}/update/${id}`, data);
 }
 
 // Method to upload an article image (if you're implementing an image upload feature separately)
 uploadArticleImage(formData: FormData) {
-  return this.http.post('http://localhost:8080/images/upload', formData);
+  return this.http.post(`${this.baseApiUrl.replace(/\/api$/, '')}/images/upload`, formData);
 }
 
 
@@ -113,12 +116,12 @@ uploadArticleImage(formData: FormData) {
 deleteArticle(id: number): Observable<void> {
   if (!id) throw new Error('ID parameter is required');
 
-  return this.http.delete<void>(`http://localhost:8080/api/posts/delete/${id}`);
+  return this.http.delete<void>(`${this.postsApiUrl}/delete/${id}`);
 }
 
   // Search articles by term
   searchArticles(term: string): Observable<Article[]> {
-    return this.http.get<Article[]>(`${this.apiUrl}/search?q=${term}`);
+    return this.http.get<Article[]>(`${this.articlesApiUrl}/search?q=${term}`);
   }
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Failed to load article. Please try again later.';
@@ -131,7 +134,7 @@ deleteArticle(id: number): Observable<void> {
     return throwError(() => new Error(errorMessage));
   }
   updateArticleWithJson(articleId: number, articleData: any): Observable<any> {
-    const url = `${this.apiUrl}/updatePost/${articleId}`; // Assuming you have an endpoint like /updatePost/{id}
+    const url = `${this.articlesApiUrl}/updatePost/${articleId}`; // Assuming you have an endpoint like /updatePost/{id}
     return this.http.put(url, articleData, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -143,7 +146,7 @@ deleteArticle(id: number): Observable<void> {
   // Enhanced likePost with optimistic update
   likePost(postId: number): Observable<any> {
     console.log(`Liking post with ID: ${postId}`);
-    const url = `http://localhost:8080/api/posts/${postId}/like`;
+    const url = `${this.postsApiUrl}/${postId}/like`;
     
     return this.http.post(url, {}).pipe(
       map(response => {
@@ -163,13 +166,13 @@ deleteArticle(id: number): Observable<void> {
     );
   }
   resetPostViews(): Observable<any> {
-    const url = `http://localhost:8080/api/posts/reset-views`;
+    const url = `${this.postsApiUrl}/reset-views`;
     return this.http.post(url, {}); // Empty body
   }
   
   
   resetViews(): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/posts/reset-views', {}).pipe(
+    return this.http.post<any>(`${this.postsApiUrl}/reset-views`, {}).pipe(
       catchError(error => {
         console.error('Error occurred while resetting views:', error);
         alert('An error occurred while resetting views. Please try again.');
@@ -178,11 +181,11 @@ deleteArticle(id: number): Observable<void> {
     );
   }
   getArticleStatistics(): Observable<any> {
-    return this.http.get<any>('http://localhost:8080/api/posts/statistics');
+    return this.http.get<any>(`${this.postsApiUrl}/statistics`);
   }
   // Method to trigger the scheduled task manually
   triggerTask(): Observable<string> {
-    return this.http.get<string>('http://localhost:8080/api/posts/trigger-scheduled-task', { responseType: 'text' as 'json' });
+    return this.http.get<string>(`${this.postsApiUrl}/trigger-scheduled-task`, { responseType: 'text' as 'json' });
   }
   
   
@@ -215,7 +218,7 @@ deleteArticle(id: number): Observable<void> {
     
     // Try the main endpoint with error handling
     return this.http.post(
-      `http://localhost:8080/api/posts/increment-view-count/${postId}?_=${randomParam}`, 
+      `${this.postsApiUrl}/increment-view-count/${postId}?_=${randomParam}`, 
       {}, 
       { headers }
     ).pipe(

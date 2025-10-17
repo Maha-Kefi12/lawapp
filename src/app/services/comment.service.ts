@@ -5,12 +5,13 @@ import { Comment } from '../models/comment';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommentService {
-  private baseApiUrl = 'http://localhost:8080/api/comments'; // Base URL
+  private baseApiUrl = `${environment.apiUrl}/comments`; // Base URL
 
   constructor(private http: HttpClient) { }
 
@@ -103,7 +104,7 @@ export class CommentService {
 
   // Get all comments - GET to /getAll
   getAllComments(): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`http://localhost:8080/api/comments/getAll`);
+    return this.http.get<Comment[]>(`${this.baseApiUrl}/getAll`);
   }
 
   // Get comments by post ID - GET to /post/postId/comments with pagination

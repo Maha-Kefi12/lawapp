@@ -213,7 +213,7 @@ export class FormDataComponent {
       this.showError('Form is invalid or article ID is missing.');
       return;
     }
-  
+
     const articleData = {
       name: this.articleForm.get('name')?.value,
       content: this.articleForm.get('content')?.value,
@@ -222,7 +222,7 @@ export class FormDataComponent {
       date: new Date().toISOString(),
       image: this.base64Image ? this.base64Image : null // Include base64 image if selected
     };
-  
+
     try {
       const updated = await firstValueFrom(
         this.articleService.updateArticleWithJson(this.articleId, articleData)
@@ -233,6 +233,24 @@ export class FormDataComponent {
     } catch (error) {
       console.error('JSON update error:', error);
       this.showError('Failed to update article with JSON.');
+    }
+  }
+
+  removeImage(): void {
+    this.previewImageUrl = null;
+    this.selectedImageFile = null;
+    this.base64Image = '';
+  }
+
+  goBack(): void {
+    this.router.navigate(['/blogs']);
+  }
+
+  getCaseReference(): string {
+    if (this.articleId) {
+      return `EDIT-${this.articleId}`;
+    } else {
+      return `NEW-${Date.now()}`;
     }
   }
 }

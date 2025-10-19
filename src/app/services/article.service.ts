@@ -190,7 +190,7 @@ deleteArticle(id: number): Observable<void> {
   
   
   getStatistics(): Observable<ArticleStatistic[]> {
-    return this.http.get<ArticleStatistic[]>(this.apiUrl).pipe(
+    return this.http.get<ArticleStatistic[]>(`${this.postsApiUrl}/statistics`).pipe(
       tap(data => console.log('Statistics fetched: ', data)), // Debugging output
       catchError(error => {
         console.error('Error fetching statistics:', error);

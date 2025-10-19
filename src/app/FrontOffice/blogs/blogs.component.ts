@@ -24,6 +24,10 @@ export class BlogsComponent implements OnInit, OnDestroy {
   pageSize: number = 3;
   totalPages: number = 0;
   totalArticles: number = 0;
+  
+  // Stats variables
+  totalViews: number = 0;
+  totalAuthors: number = 0;
 
   private routerSubscription: Subscription | null = null;
 
@@ -162,6 +166,9 @@ export class BlogsComponent implements OnInit, OnDestroy {
           this.articles.forEach(article => {
             console.log(`Article ID ${article.id}: ${article.viewCount} views`);
           });
+          
+          // Calculate stats
+          this.calculateStats();
         } else if (Array.isArray(response)) {
           // Non-paginated response (array of articles) - should not happen with our modified service
           this.articles = response;
@@ -459,5 +466,14 @@ export class BlogsComponent implements OnInit, OnDestroy {
         this.refreshArticles();
       }
     });
+  }
+
+  calculateStats(): void {
+    // Calculate total views
+    this.totalViews = this.articles.reduce((sum, article) => sum + (article.viewCount || 0), 0);
+    
+    // Calculate unique authors
+    const uniqueAuthors = new Set(this.articles.map(article => article.postedBy).filter(author => author));
+    this.totalAuthors = uniqueAuthors.size;
   }
 }

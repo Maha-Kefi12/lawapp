@@ -1,42 +1,188 @@
-<div class="container">
-  <div class="form_area">
-    <p class="title">CREATE ARTICLE</p>
-    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+<!-- Legal-Themed Article Creation Form -->
+<div class="legal-form-container">
+  <!-- Legal Header with Scales of Justice -->
+  <div class="legal-header">
+    <div class="scales-icon">
+      <svg viewBox="0 0 100 100" class="scales-svg">
+        <path d="M50 10 L50 90" stroke="#2c3e50" stroke-width="3" fill="none"/>
+        <path d="M30 30 L70 30" stroke="#2c3e50" stroke-width="3" fill="none"/>
+        <circle cx="30" cy="30" r="8" fill="#e74c3c"/>
+        <circle cx="70" cy="30" r="8" fill="#e74c3c"/>
+        <path d="M20 50 Q30 40 40 50 Q30 60 20 50" stroke="#2c3e50" stroke-width="2" fill="none"/>
+        <path d="M60 50 Q70 40 80 50 Q70 60 60 50" stroke="#2c3e50" stroke-width="2" fill="none"/>
+        <path d="M45 85 L55 85" stroke="#2c3e50" stroke-width="4" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="legal-title">Legal Article Creation</h1>
+    <p class="legal-subtitle">Draft and publish your legal insights</p>
+  </div>
 
-      <div class="form_group">
-        <label class="sub_title" for="name">Title</label>
-        <input id="name" placeholder="Enter article title" class="form_style" type="text" formControlName="name">
-      </div>
-
-      <div class="form_group">
-        <label class="sub_title" for="content">Content</label>
-        <textarea id="content" placeholder="Enter article content" class="form_style" formControlName="content"></textarea>
-      </div>
-
-      <div class="form_group">
-        <label class="sub_title" for="postedBy">Posted By</label>
-        <input id="postedBy" placeholder="Enter your name" class="form_style" type="text" formControlName="postedBy">
-      </div>
-
-
-      <div class="form_group">
-        <label class="sub_title" for="image">Upload Image</label>
-        <input type="file" id="image" (change)="onFileSelected($event)">
-        <div *ngIf="previewImageUrl">
-          <img [src]="previewImageUrl" alt="Image Preview" width="200" />
+  <!-- Form Container with Legal Styling -->
+  <div class="legal-form-wrapper">
+    <div class="form-paper">
+      <!-- Document Header -->
+      <div class="document-header">
+        <div class="document-seal">
+          <svg viewBox="0 0 60 60" class="seal-svg">
+            <circle cx="30" cy="30" r="25" fill="none" stroke="#c0392b" stroke-width="2"/>
+            <text x="30" y="35" text-anchor="middle" font-family="serif" font-size="8" fill="#c0392b">LEGAL</text>
+            <text x="30" y="42" text-anchor="middle" font-family="serif" font-size="6" fill="#c0392b">DOCUMENT</text>
+          </svg>
+        </div>
+        <div class="document-info">
+          <h2>Article Draft</h2>
+          <p>Case Reference: {{ getCaseReference() }}</p>
         </div>
       </div>
 
-      <div>
-        <button class="btn" type="submit" [disabled]="articleForm.invalid || isLoading">Submit</button>
-      </div>
-      
-    </form>
+      <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="legal-form">
+        <!-- Title Field -->
+        <div class="form-section">
+          <div class="field-label">
+            <i class="las la-gavel"></i>
+            <label for="name">Article Title</label>
+            <span class="required-indicator">*</span>
+          </div>
+          <div class="input-wrapper">
+            <input 
+              id="name" 
+              type="text" 
+              formControlName="name"
+              placeholder="Enter the title of your legal article..."
+              class="legal-input"
+              [class.error]="submitted && articleForm.get('name')?.invalid"
+            >
+            <div class="input-decoration"></div>
+          </div>
+          <div *ngIf="submitted && articleForm.get('name')?.invalid" class="error-message">
+            <i class="las la-exclamation-triangle"></i>
+            Article title is required
+          </div>
+        </div>
+
+        <!-- Content Field -->
+        <div class="form-section">
+          <div class="field-label">
+            <i class="las la-file-alt"></i>
+            <label for="content">Article Content</label>
+            <span class="required-indicator">*</span>
+          </div>
+          <div class="textarea-wrapper">
+            <textarea 
+              id="content" 
+              formControlName="content"
+              placeholder="Write your legal analysis, case study, or legal insights here..."
+              class="legal-textarea"
+              rows="12"
+              [class.error]="submitted && articleForm.get('content')?.invalid"
+            ></textarea>
+            <div class="textarea-decoration"></div>
+          </div>
+          <div *ngIf="submitted && articleForm.get('content')?.invalid" class="error-message">
+            <i class="las la-exclamation-triangle"></i>
+            Article content is required
+          </div>
+        </div>
+
+        <!-- Author Field -->
+        <div class="form-section">
+          <div class="field-label">
+            <i class="las la-user-tie"></i>
+            <label for="postedBy">Author Name</label>
+            <span class="required-indicator">*</span>
+          </div>
+          <div class="input-wrapper">
+            <input 
+              id="postedBy" 
+              type="text" 
+              formControlName="postedBy"
+              placeholder="Enter your full name or legal credentials..."
+              class="legal-input"
+              [class.error]="submitted && articleForm.get('postedBy')?.invalid"
+            >
+            <div class="input-decoration"></div>
+          </div>
+          <div *ngIf="submitted && articleForm.get('postedBy')?.invalid" class="error-message">
+            <i class="las la-exclamation-triangle"></i>
+            Author name is required
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div class="form-section">
+          <div class="field-label">
+            <i class="las la-image"></i>
+            <label for="image">Article Image</label>
+            <span class="optional-indicator">(Optional)</span>
+          </div>
+          <div class="file-upload-wrapper">
+            <div class="file-upload-area" [class.has-file]="selectedImageFile">
+              <input 
+                type="file" 
+                id="image" 
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                class="file-input"
+              >
+              <div class="upload-content">
+                <i class="las la-cloud-upload-alt"></i>
+                <p *ngIf="!selectedImageFile">Click to upload or drag and drop</p>
+                <p *ngIf="selectedImageFile" class="file-selected">{{ selectedImageFile.name }}</p>
+                <span>PNG, JPG, GIF up to 10MB</span>
+              </div>
+            </div>
+            
+            <!-- Image Preview -->
+            <div *ngIf="previewImageUrl" class="image-preview">
+              <img [src]="previewImageUrl" alt="Preview" class="preview-image">
+              <button type="button" class="remove-image" (click)="removeImage()">
+                <i class="las la-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="goBack()">
+            <i class="las la-arrow-left"></i>
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn-primary" 
+            [disabled]="articleForm.invalid || isLoading"
+            [class.loading]="isLoading"
+          >
+            <span *ngIf="!isLoading" class="btn-content">
+              <i class="las la-gavel"></i>
+              {{ articleId ? 'Update Article' : 'Publish Article' }}
+            </span>
+            <span *ngIf="isLoading" class="btn-content">
+              <div class="spinner-small"></div>
+              Publishing...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
-<!-- Loading overlay -->
-<div *ngIf="isLoading" class="loading-overlay">
-  <div class="spinner"></div>
-  <p>Processing your article...</p>
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="legal-loading-overlay">
+  <div class="loading-content">
+    <div class="legal-spinner">
+      <div class="scales-animation">
+        <svg viewBox="0 0 100 100" class="animated-scales">
+          <path d="M50 10 L50 90" stroke="#2c3e50" stroke-width="3" fill="none"/>
+          <path d="M30 30 L70 30" stroke="#2c3e50" stroke-width="3" fill="none"/>
+          <circle cx="30" cy="30" r="8" fill="#e74c3c"/>
+          <circle cx="70" cy="30" r="8" fill="#e74c3c"/>
+        </svg>
+      </div>
+    </div>
+    <h3>Processing Your Legal Article</h3>
+    <p>Please wait while we prepare your document for publication...</p>
+  </div>
 </div>

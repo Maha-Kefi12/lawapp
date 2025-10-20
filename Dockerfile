@@ -13,6 +13,8 @@ RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
+#ENV
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Build Angular app for production (skip budget checks)
 RUN npm run build -- --configuration production || npm run build

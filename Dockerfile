@@ -7,6 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
+RUN npm config set registry https://registry.npmmirror.com
+RUN npm cache clean --force
 RUN npm ci --legacy-peer-deps
 
 # Copy source code

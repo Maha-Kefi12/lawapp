@@ -114,7 +114,7 @@
                       <div class="comment-header">
                         <div class="avatar">
                           <!-- Replace image with comment author initials -->
-                          <div class="comment-initials">{{ comment.postedBy?.charAt(0) || 'U' }}</div>
+                          <div class="comment-initials">{{ comment.postedBy.charAt(0) || 'U' }}</div>
                         </div>
                         <div class="comment-info">
                           <h4>{{ comment.postedBy }}</h4>
@@ -252,7 +252,7 @@
               <div class="author-info">
                 <div class="author-avatar">
                   <!-- Replace with author initials instead of image -->
-                  <div class="author-initials">{{ article.postedBy?.charAt(0) || 'A' }}</div>
+                  <div class="author-initials">{{ article.postedBy.charAt(0) || 'A' }}</div>
                 </div>
                 <h4>{{ article.postedBy }}</h4>
                 <p>Legal expert and professional counselor with years of experience in providing legal advice.</p>

@@ -1,21 +1,104 @@
-<!-- Blog Articles HTML with Enhanced Styling -->
-<div class="breadcrumb-area bread-bg">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-6 text-center">
-          <div class="breadcrumb-title">
-            <h1>Blogs & Articles</h1>
-            <h6 class="text-white">
-              <a routerLink="/">Home</a>
-              <span>/</span>
-              Blogs & Articles
-            </h6>
+<!-- Legal-Themed Blog Header -->
+<div class="legal-breadcrumb-area">
+  <div class="legal-overlay"></div>
+  <div class="legal-pattern"></div>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <div class="legal-breadcrumb-content">
+          <!-- Legal Seal -->
+          <div class="legal-seal-container">
+            <div class="legal-seal">
+              <svg viewBox="0 0 120 120" class="seal-svg">
+                <circle cx="60" cy="60" r="55" fill="none" stroke="#c0392b" stroke-width="3"/>
+                <circle cx="60" cy="60" r="45" fill="none" stroke="#c0392b" stroke-width="2"/>
+                <text x="60" y="50" text-anchor="middle" font-family="serif" font-size="12" fill="#c0392b" font-weight="bold">LEGAL</text>
+                <text x="60" y="65" text-anchor="middle" font-family="serif" font-size="8" fill="#c0392b">KNOWLEDGE</text>
+                <text x="60" y="75" text-anchor="middle" font-family="serif" font-size="6" fill="#c0392b">BASE</text>
+                <!-- Scales of Justice -->
+                <path d="M60 20 L60 100" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                <path d="M40 40 L80 40" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                <circle cx="40" cy="40" r="6" fill="#e74c3c"/>
+                <circle cx="80" cy="40" r="6" fill="#e74c3c"/>
+                <path d="M30 80 Q40 70 50 80 Q40 90 30 80" stroke="#2c3e50" stroke-width="2" fill="none"/>
+                <path d="M70 80 Q80 70 90 80 Q80 90 70 80" stroke="#2c3e50" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Main Title -->
+          <div class="legal-title-section">
+            <h1 class="legal-main-title">
+              <span class="title-line-1">Legal</span>
+              <span class="title-line-2">Articles &</span>
+              <span class="title-line-3">Case Studies</span>
+            </h1>
+            <div class="title-underline"></div>
+          </div>
+          
+          <!-- Subtitle -->
+          <p class="legal-subtitle">
+            Expert legal insights, case analysis, and professional commentary
+          </p>
+          
+          <!-- Breadcrumb Navigation -->
+          <nav class="legal-breadcrumb-nav">
+            <ol class="breadcrumb-list">
+              <li class="breadcrumb-item">
+                <a routerLink="/" class="breadcrumb-link">
+                  <i class="las la-home"></i>
+                  <span>Home</span>
+                </a>
+              </li>
+              <li class="breadcrumb-separator">
+                <i class="las la-angle-right"></i>
+              </li>
+              <li class="breadcrumb-item active">
+                <span class="breadcrumb-current">
+                  <i class="las la-gavel"></i>
+                  Legal Articles
+                </span>
+              </li>
+            </ol>
+          </nav>
+          
+          <!-- Legal Stats -->
+          <div class="legal-stats">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="las la-file-alt"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number">{{ totalArticles || 0 }}</span>
+                <span class="stat-label">Articles</span>
+              </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="las la-eye"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number">{{ totalViews || 0 }}</span>
+                <span class="stat-label">Views</span>
+              </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="las la-users"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number">{{ totalAuthors || 0 }}</span>
+                <span class="stat-label">Authors</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
   
   <div class="blog-section gray-bg section-padding">
     <div class="container">
@@ -40,8 +123,27 @@
         </div>
         <!-- Add New Article Button -->
         <div *ngIf="!isFormRoute()" class="col-md-4 text-end">
-          <button class="add-article-btn" [routerLink]="['/blogs/form-data']">
-            <i class="las la-plus"></i> Publish Article
+          <button class="legal-create-btn" [routerLink]="['/blogs/form-data']">
+            <div class="btn-content">
+              <div class="btn-icon">
+                <svg viewBox="0 0 24 24" class="gavel-icon">
+                  <path d="M20.5 3.5L19 2L17.5 3.5L19 5L20.5 3.5Z" fill="currentColor"/>
+                  <path d="M6.5 17.5L5 16L3.5 17.5L5 19L6.5 17.5Z" fill="currentColor"/>
+                  <path d="M20.5 17.5L19 16L17.5 17.5L19 19L20.5 17.5Z" fill="currentColor"/>
+                  <path d="M3.5 3.5L2 2L0.5 3.5L2 5L3.5 3.5Z" fill="currentColor"/>
+                  <path d="M12 2L10 4H14L12 2Z" fill="currentColor"/>
+                  <path d="M12 6L10 8H14L12 6Z" fill="currentColor"/>
+                  <path d="M12 10L10 12H14L12 10Z" fill="currentColor"/>
+                  <path d="M12 14L10 16H14L12 14Z" fill="currentColor"/>
+                  <path d="M12 18L10 20H14L12 18Z" fill="currentColor"/>
+                </svg>
+              </div>
+              <div class="btn-text">
+                <span class="btn-title">Create Legal Article</span>
+                <span class="btn-subtitle">Draft & Publish</span>
+              </div>
+            </div>
+            <div class="btn-shine"></div>
           </button>
         </div>
       </div>
@@ -179,8 +281,8 @@
                 <button class="btn-primary" *ngIf="searchTerm" (click)="clearSearch()">
                   <i class="las la-times"></i> Clear Search
                 </button>
-                <button class="btn-primary" [routerLink]="['/blogs/form-data']">
-                  <i class="las la-plus"></i> Create Article
+                <button class="btn-primary legal-create-btn-small" [routerLink]="['/blogs/form-data']">
+                  <i class="las la-gavel"></i> Create Legal Article
                 </button>
               </div>
             </div>

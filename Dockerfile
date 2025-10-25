@@ -7,29 +7,26 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm config set registry https://registry.npmmirror.com
-RUN npm cache clean --force
-RUN npm ci --legacy-peer-deps
+RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
-#ENV
-ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-# Build Angular app for production (skip budget checks)
-RUN npm run build -- --configuration production || npm run build
+# Set Node options for more memory
+ENV NODE_OPTIONS=--max_old_space_size=4096
+
+# Build Angular app
+RUN npm run build
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
 
-# Copy built app from build stage
-COPY --from=build /app/dist/* /usr/share/nginx/html/
+# Copy built app from workspace (dist is at root level)
+COPY dist/lawapp/* /usr/share/nginx/html/
 
-# Copy custom nginx configuration
+# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
 EXPOSE 80
 
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
